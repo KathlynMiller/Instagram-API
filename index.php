@@ -19,13 +19,19 @@ if (isset($_GET['code'])){
                                    'code' => $code // linked to code variable 
                                    );
 //cURL is what we use in PHP, its a library calls to other API's.
-$curl = curl_init($url);
+$curl = curl_init($url); // setting a curl session and we put in $url because that's where we are getting the data from.
 curl_setopt($curl, CURLOPT_POST, true);
-curl_setopt($curl, CURLOPT_POST, $access_token_settings);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-}
+curl_setopt($curl, CURLOPT_POST, $access_token_settings); // setting the POSTFIELDS to the array setup that we created.
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); // setting is equal to 1 because we are getting strings back.
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);// but in live work-production we want to set this to true.
 
+$result = curl_exec($curl);
+curl_close($curl);
+
+$results = json_decode($result, true);
+echo $results['user']['username'];
+}
+else { // added missing else statement
 ?>
 
 <!DOCTYPE html>
@@ -39,3 +45,6 @@ curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
    <a href="https://api.instagram.com/oauth/authorize/?client_id=<?php echo clientID; ?>&redirect_url=<?php echo redirectURI; ?>&response_type=code">LOGIN</a> 
    <!--added login and url with echoing clientID and  redirectURI -->
 </html>
+<?php
+}  // added missing bracket
+?>
