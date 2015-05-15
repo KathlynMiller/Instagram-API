@@ -18,7 +18,14 @@ if (isset($_GET['code'])){
                                    'redirect_url' => 'authorization_code', // linked to url
                                    'code' => $code // linked to code variable 
                                    );
+//cURL is what we use in PHP, its a library calls to other API's.
+$curl = curl_init($url);
+curl_setopt($curl, CURLOPT_POST, true);
+curl_setopt($curl, CURLOPT_POST, $access_token_settings);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 }
+
 ?>
 
 <!DOCTYPE html>
