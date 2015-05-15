@@ -14,12 +14,12 @@ define('ImageDirectory', 'pics/'); // adding pics into pic folder
 function connectToInstagram($url){
 	$ch = curl_init();
 
-	curl_setopt_array($ch, array{
-		CURLOPT_URL = $url,
-		CURLOPT_RETURNTRANSFER = true,
-		CURLOPT_SSL_VERIFYPEER = false,
-		CURLOPT_SSL_VERIFYHOST = 2,
-	});
+	curl_setopt_array($ch, array(
+		CURLOPT_URL => $url,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_SSL_VERIFYPEER => false,
+		CURLOPT_SSL_VERIFYHOST => 2,
+	));
 	$result = curl_exec($ch);
 	curl_close($ch);
 	return $result;
@@ -31,7 +31,7 @@ function getUserID($userName){
 	$instagramInfo = connectToInstagram($url);
 	$results = json_decode($instagramInfo, true);
 
-	echo $results['data']['0']['id'];
+	return $results['data']['0']['id'];
 }
 //function to print put images
 function printImages($userID){
@@ -78,6 +78,7 @@ else { // added missing else statement
 <html>
 <head>
 	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
    <!-- Creating a login for people to go and give approval for our web app to acces their Instagram Account
