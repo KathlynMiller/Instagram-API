@@ -5,7 +5,7 @@ ini_set('default_socket_timeout', 300);
 session_start();
 
 //Make Constants using define.
-define('clientid', '62ec64b621af403e80b8fffba847c630'); // client id code
+define('clientID', '62ec64b621af403e80b8fffba847c630'); // client id code
 define('clientSecret', '292703a0ea7a419e8afb6ae6c900e43f'); // client secret code
 define('redirectURI', 'http://localhost/appacademyapi/index.php'); // redirectURI linked url page
 define('ImageDirectory', 'pics/'); // adding pics into pic folder
@@ -27,11 +27,11 @@ function connectToInstagram($url){
 }
 // function to get userID cause userName doesnt allow us to get picture!
 function getUserID($userName){
-	$url = 'http://api.instagram.com/vl/users/search?q='.$userName.'&client_id='.clientID;
+	$url = 'https://api.instagram.com/v1/users/search?q='.$userName.'&client_id='.clientID;
 	$instagramInfo = connectToInstagram($url);
 	$results = json_decode($instagramInfo, true);
 
-	return $results['data']['0']['id'];
+	return $results['data'][0]['id'];
 }
 //function to print put images
 function printImages($userID){
@@ -42,11 +42,23 @@ function printImages($userID){
 	foreach($results['data'] as $items){
 		$image_url = $items['images']['low_resolution']['url']; // going to go through all of my results and give myself back the URL of those pictures because we want to save itin the PHP Server.
 		echo '<img src="'.$image_url.'"/></br>';
+		//calling a function to save that $image_url
+		savePictures($image_url);
 	}
+
+}
+
+function savePicutres($image_url){
+	echo $image_url . '<br>'; 
+	$filename = basename($image_url); // the filename is what we are storing. basename is the PHP built in method that we are using to store $image_url
+	echo $filename . '<br>';
+
+	$destination = ImageDirectory . $filename;
+	file_put_contents($destination, file_get_contents($image_url)); // goes and grabs an imagefile  and sotres it into our server
 }
 
 if (isset($_GET['code'])){
-	$code = ($_GET['code']); // function containing GET variable code
+	$code = $_GET['code']; // function containing GET variable code
 	$url = 'https://api.instagram.com/oauth/access_token'; // url
 	$access_token_settings = array ('client_id' => clientID,// linked to clientID
 	                               'client_secret' => clientSecret, // linked to clientSecret
@@ -83,7 +95,7 @@ else { // added missing else statement
 <body>
    <!-- Creating a login for people to go and give approval for our web app to acces their Instagram Account
    After getting approval we are now going to havethe information so that we can play with it -->
-   <a href="https://api.instagram.com/oauth/authorize/?client_id=<?php echo clientID; ?>&redirect_url=<?php echo redirectURI; ?>&response_type=code">LOGIN</a> 
+   <a href="https://api.instagram.com/oauth/authorize/?client_id=<?php echo clientID; ?>&redirect_uri=<?php echo redirectURI; ?>&response_type=code">LOGIN</a> 
    <!--added login and url with echoing clientID and  redirectURI -->
 </html>
 <?php
